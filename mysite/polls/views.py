@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse
@@ -71,3 +71,8 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
+def resultData(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    choices = question.choice_set.all()
+    votes = [choice.votes for choice in choices]
+    return JsonResponse({ 'votes': votes})
